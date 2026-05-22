@@ -24,7 +24,10 @@ DETALLE (num_orden, cod_prod, cantidad)
 16) Seleccionar el código de los clientes que han ordenado alguno de los mismos productos ordenados por el cliente García.
 17) Seleccionar el nombre de los clientes y en el caso que hayan realizado alguna orden, el número de orden.
 18) Seleccionar el mayor y el menor número de orden. 
-
+19) Seleccionar las ciudades donde hay clientes y/o proveedores.
+20) Seleccionar las ciudades donde hay clientes y no hay proveedores.
+21) Seleccionar el número de las órdenes en donde se haya pedido solamente el producto 110.
+22) Seleccionar todos los datos de las órdenes en donde se haya pedido ESMALTE 10L o ESMALTE 25L pero no ambos productos. 
 
 1)
 SELECT NOMBRE
@@ -131,18 +134,32 @@ AND COD_PROD IN (SELECT COD_PROD
 				WHERE NUM_ORDEN = 5001)
 
 16)
-SELECT C.COD_CLI
+SELECT DISTINCT C.COD_CLI
 FROM CLIENTES C
 JOIN ORDEN O
 ON O.COD_CLI = C.COD_CLI
 JOIN DETALLE D
-ON O.NUM_ORDEN 
+ON O.NUM_ORDEN = D.NUM_ORDEN 
+WHERE D.COD_PROD IN (SELECT D.COD_PROD
+					FROM DETALLE D
+					JOIN ORDEN O
+					ON D.NUM_ORDEN = O.NUM_ORDEN
+					JOIN CLIENTES C
+					ON O.COD_CLI = C.COD_CLI
+					WHERE UPPER(C.NOMBRE) = 'GARCIA')
 
 17)
 SELECT C.NOMBRE, O.NUM_ORDEN
 FROM CLIENTES C
 LEFT JOIN ORDEN O
 ON C.COD_CLI = O.COD_CLI
+
+18) 
+SELECT MAX(NUM_ORDEN)
+FROM ORDEN
+UNION
+SELECT MIN(NUM_ORDEN)
+FROM ORDEN
 
 19)
 SELECT CIUDAD
